@@ -1,0 +1,30 @@
+grun "glib-run"
+
+grun allows to schedule a function from any concurrently running goroutine
+in the default glib main loop.
+
+By importing this library it registers a glib idle handler in the default glib main loop.
+
+Example:
+
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/s-urbaniak/grun"
+	"github.com/ziutek/glib"
+)
+
+func main() {
+	l := glib.NewMainLoop(nil)
+
+	go func() {
+		time.Sleep(1 * time.Second)
+		fmt.Println("time to quit the glib main loop")
+		grun.Run(func() { l.Quit() })
+	}()
+
+	l.Run()
+}
