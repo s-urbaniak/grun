@@ -16,7 +16,7 @@ var (
 var once sync.Once
 
 // Run runs f in the default glib main loop and waits for f to return.
-// It can be called from different goroutines.
+// It can be called from any goroutine.
 func Run(f func()) {
 	runChan <- f
 	<-runDone
