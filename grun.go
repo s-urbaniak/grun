@@ -3,17 +3,12 @@ package grun
 // #cgo pkg-config: glib-2.0
 // #include "grun.h"
 import "C"
-import (
-	"runtime"
-	"sync"
-)
+import "runtime"
 
 var (
 	runChan = make(chan func())
 	runDone = make(chan struct{})
 )
-
-var once sync.Once
 
 // Run runs f in the default glib main loop and waits for f to return.
 // It can be called from any goroutine.
