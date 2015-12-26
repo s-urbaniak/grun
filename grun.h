@@ -1,12 +1,7 @@
 #include <glib.h>
 
-extern void runFunc();
+extern int run();
 
-static gboolean run(gpointer user_data) {
-  runFunc();
-  return TRUE;
-}
-
-static void add_runner() {
+static void idle_add() {
   g_idle_add(run, NULL);
 }
