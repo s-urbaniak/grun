@@ -8,10 +8,12 @@ import (
 	"unsafe"
 )
 
+type done struct{}
+
 var (
 	mu      sync.Mutex // serializes calls to Run(f)
 	runChan = make(chan func())
-	runDone = make(chan struct{})
+	runDone = make(chan done)
 )
 
 // Run runs f in the default glib main loop and waits for f to return.
@@ -38,7 +40,7 @@ func run(user_data unsafe.Pointer) (fin C.int) {
 	select {
 	case f := <-runChan:
 		f()
-		runDone <- struct{}{}
+		runDone <- done{}
 		fin = 0
 	default:
 	}
