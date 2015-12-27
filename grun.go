@@ -31,14 +31,20 @@ func Run(f func()) {
 }
 
 // runFunc is the function that is being invoked by the glib main loop idle handler.
-// It is assumed that this function runs in the same thread as the main loop.
+// It is assumed that this function runs in the same thread as the main loop (the main thread).
+//
 // It returns 0 (gboolean FALSE) when the function received via the runChan channel is done
 // or 1 (gboolean TRUE) otherwise.
-// Note: this can busy-wait until f is received via the runChan channel.
+//
+// Note: this method can be invoked many times (busy-wait)
+// until f is received via the runChan channel.
+//
 //export run
 func run(user_data unsafe.Pointer) (fin C.int) {
 	fin = 1
 
+	// The main loop thread is under control of the Go runtime,
+	// so we can use all of its concurrency mechanisms.
 	select {
 	case f := <-runChan:
 		f()
